@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="id" class="dark" id="html-root">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BUSINESS FORECASTING & PROJECTIONS | GIVI DASHBOARD 2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { navy: { 950: '#070a12', 900: '#0b0f19', 800: '#111827', 700: '#1f2937' } }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #070a12; color: #f1f5f9; font-family: ui-sans-serif, system-ui, sans-serif; }
+        .card-navy { background-color: #0b0f19; border: 1px solid #1e293b; box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5); }
+        .card-inner { background-color: #111827; border: 1px solid #1f2937; transition: all 0.2s ease; }
+        .card-inner:hover { border-color: #38bdf8; transform: translateY(-1px); }
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: #070a12; }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }
+    </style>
+</head>
+<body class="h-screen flex overflow-hidden text-[10px]">
+
+    <!-- SIDEBAR -->
+    <aside class="w-52 bg-[#060911] border-r border-slate-800 flex flex-col justify-between shrink-0 h-full">
+        <div class="overflow-y-auto">
+            <div class="p-2 border-b border-slate-800 flex items-center justify-center bg-[#060911]">
+                <img src="{{ url_for('static', filename='logo.jpg') }}" alt="GIVI Point Logo" class="w-full h-24 object-contain rounded-md">
+            </div>
+
+            <nav class="p-2 space-y-1 mt-1">
+                <a href="/" class="flex items-center space-x-2 px-2.5 py-1.5 rounded text-slate-400 hover:bg-slate-800 transition-colors">
+                    <span>📊</span><span>Executive Dashboard</span>
+                </a>
+                <a href="/customer-root-cause" class="flex items-center space-x-2 px-2.5 py-1.5 rounded text-blue-400 hover:bg-slate-800 transition-colors">
+                    <span>💬</span><span>Customer Root Cause</span>
+                </a>
+                <a href="/forecast" class="flex items-center space-x-2 px-2.5 py-1.5 rounded bg-amber-600 text-white font-semibold shadow">
+                    <span>🔮</span><span>Forecasting</span>
+                </a>
+            </nav>
+        </div>
+
+        <div class="p-2 border-t border-slate-800 bg-[#05070d]">
+            <p class="text-[8px] text-slate-500 mb-1.5 leading-tight">We are more than a motorcycle accessories store. We give riders peace of mind.</p>
+            <div class="rounded overflow-hidden border border-slate-800">
+                <img src="{{ url_for('static', filename='motor.jpg') }}" alt="Givi Bike Touring" class="w-full h-14 object-cover opacity-90">
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <div class="flex-1 flex flex-col min-w-0 h-full overflow-y-auto bg-[#070a12]">
+        
+        <!-- HEADER TOP BAR -->
+        <header class="bg-[#070a12] border-b border-slate-800 p-2 px-4 flex justify-between items-center sticky top-0 z-50 shadow-md">
+            <div class="flex items-center space-x-2">
+                <h1 class="text-xs font-bold text-white tracking-wide uppercase">PROYEKSI & PERAMALAN BISNIS (FORECASTING)</h1>
+                <span class="bg-amber-950 border border-amber-800 text-amber-400 text-[8px] font-mono px-1.5 py-0.5 rounded">● Blended Engine (3% Internal + 2.5% AISI)</span>
+                <span class="text-slate-500 text-[8px]" id="last-updated-str">Updated: -</span>
+            </div>
+            <div class="flex items-center space-x-2">
+                <button onclick="window.print()" class="bg-slate-800 hover:bg-slate-700 text-white text-[9px] px-2.5 py-1 rounded border border-slate-700 font-medium">🖨️ Export Executive PDF</button>
+            </div>
+        </header>
+
+        <!-- BODY -->
+        <main class="p-3 space-y-3 pb-12">
+
+            <!-- ROW 1: TOP FORECAST KPI CARDS -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-2.5">
+                <div class="card-navy rounded-lg p-2.5 border-l-4 border-l-amber-500 space-y-1">
+                    <p class="text-[8px] text-slate-400 font-bold uppercase">PREDIKSI BULAN DEPAN (NOV 2026)</p>
+                    <p class="text-sm font-black text-amber-400 font-mono" id="next-month-pred">IDR 0</p>
+                    <div class="flex justify-between items-center text-[7.5px] pt-1 border-t border-slate-800/80">
+                        <span class="text-emerald-400 font-bold">▲ Organic Growth (+3%) × AISI (+2.5%)</span>
+                        <span class="text-slate-500">Confidence Interval: ±4.2%</span>
+                    </div>
+                </div>
+
+                <div class="card-navy rounded-lg p-2.5 border-l-4 border-l-blue-500 space-y-1">
+                    <p class="text-[8px] text-slate-400 font-bold uppercase">TOTAL PROYEKSI Q4 CLOSING (OCT-DEC)</p>
+                    <p class="text-sm font-black text-white font-mono" id="total-3m-pred">IDR 0</p>
+                    <div class="flex justify-between items-center text-[7.5px] pt-1 border-t border-slate-800/80">
+                        <span class="text-amber-400 font-bold">⭐ Expected Value (Base Case)</span>
+                        <span class="text-slate-500">MAPE Accuracy: 94.8%</span>
+                    </div>
+                </div>
+
+                <div class="card-navy rounded-lg p-2.5 border-l-4 border-l-emerald-500 space-y-1">
+                    <p class="text-[8px] text-slate-400 font-bold uppercase">STATUS TARGET GAP BOD</p>
+                    <p class="text-xs font-black text-emerald-400 uppercase">On Track (Aman)</p>
+                    <div class="flex justify-between items-center text-[7.5px] pt-1 border-t border-slate-800/80">
+                        <span class="text-slate-300">Memenuhi Target BOD (Rp 250M/bln)</span>
+                        <span class="bg-emerald-950 text-emerald-400 px-1 rounded font-mono">108% Coverage</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ROW 2: HISTORICAL VS PROJECTION GRAPH WITH SCENARIO SELECTOR & REVENUE MATRIKS -->
+            <div class="card-navy rounded-lg p-3 space-y-2 border border-slate-800/80 bg-gradient-to-br from-[#0b0f19] to-[#070a12]">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-slate-800/80 pb-2">
+                    <div>
+                        <div class="flex items-center space-x-1.5">
+                            <span class="text-sky-400 text-xs">📈</span>
+                            <h2 class="text-[9px] font-bold text-slate-200 tracking-wider uppercase">GRAFIK TREN HISTORIS VS PROYEKSI Q4 (BLENDED FORECAST ENGINE)</h2>
+                        </div>
+                        <p class="text-[7.5px] text-slate-400">Model: 3% Internal Organic Growth + 2.5% AISI Macro Market Adjustment (Target AISI: 6,2 Juta Unit)</p>
+                    </div>
+
+                    <!-- SCENARIO BUTTONS -->
+                    <div class="flex items-center space-x-1 bg-slate-900 p-1 rounded-lg border border-slate-800">
+                        <span class="text-[7.5px] text-slate-400 font-bold px-1.5">Skenario:</span>
+                        <button id="btn-pessimistic" onclick="switchScenario('pessimistic')" class="px-2 py-0.5 rounded text-[8px] font-bold text-slate-400 hover:text-white transition-colors">Pesimis (-10%)</button>
+                        <button id="btn-base" onclick="switchScenario('base')" class="px-2 py-0.5 rounded text-[8px] font-bold bg-amber-500 text-slate-950 shadow">Base Case</button>
+                        <button id="btn-optimistic" onclick="switchScenario('optimistic')" class="px-2 py-0.5 rounded text-[8px] font-bold text-slate-400 hover:text-white transition-colors">Optimis (+15%)</button>
+                    </div>
+                </div>
+
+                <div class="h-[170px] relative w-full mt-1">
+                    <canvas id="forecastChart"></canvas>
+                </div>
+
+                <!-- MATRIKS REVENUE AKTUAL VS PROYEKSI FY 2026 (COMPACT EXECUTIVE STRIP) -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1.5 border-t border-slate-800/80">
+                    <div class="bg-slate-900/90 p-1.5 rounded border border-slate-800/80 flex justify-between items-center">
+                        <div>
+                            <p class="text-[7px] text-slate-400 uppercase font-bold">REVENUE AKTUAL YTD (JAN - OCT)</p>
+                            <p class="text-[9.5px] font-black text-sky-400 font-mono" id="actual-ytd-val">IDR 0</p>
+                        </div>
+                        <span class="text-[7px] bg-sky-950 border border-sky-800 text-sky-300 px-1 py-0.5 rounded">Actual Excel</span>
+                    </div>
+
+                    <div class="bg-slate-900/90 p-1.5 rounded border border-slate-800/80 flex justify-between items-center">
+                        <div>
+                            <p class="text-[7px] text-slate-400 uppercase font-bold">PROYEKSI SISA Q4 (NOV - DEC)</p>
+                            <p class="text-[9.5px] font-black text-amber-400 font-mono" id="proj-q4-val">IDR 0</p>
+                        </div>
+                        <span class="text-[7px] bg-amber-950 border border-amber-800 text-amber-300 px-1 py-0.5 rounded">Forecast Model</span>
+                    </div>
+
+                    <div class="bg-gradient-to-r from-emerald-950/60 to-slate-900 p-1.5 rounded border border-emerald-800/50 flex justify-between items-center">
+                        <div>
+                            <p class="text-[7px] text-emerald-400 uppercase font-bold">TOTAL FORECASTING REVENUE FY 2026</p>
+                            <p class="text-[10px] font-black text-emerald-300 font-mono" id="total-fy2026-val">IDR 0</p>
+                        </div>
+                        <span class="text-[7px] bg-emerald-500 text-slate-950 font-bold px-1.5 py-0.5 rounded shadow">FY2026 Target</span>
+                    </div>
+                </div>
+
+                <div class="text-[7.5px] text-slate-500 flex justify-between pt-1 font-mono">
+                    <span>Garis Solid: Data Aktual 2026 | Garis Putus-putus: Organic Trend (+3%) × AISI Index (+2.5%) + Holiday Multiplier (+8%)</span>
+                    <span class="text-sky-400 font-semibold">Audit-Ready Quantitative Engine</span>
+                </div>
+            </div>
+
+            <!-- ROW 3: FINANCIAL MARGIN & SUPPLY CHAIN READINESS -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-2.5">
+                
+                <div class="card-navy rounded-lg p-3 space-y-2 border border-slate-800">
+                    <div class="flex justify-between items-center border-b border-slate-800 pb-1.5">
+                        <div class="flex items-center space-x-1.5">
+                            <span class="text-emerald-400 text-xs">💰</span>
+                            <h2 class="text-[9px] font-bold text-slate-200 tracking-wider uppercase">PROYEKSI MARGIN & EFISIENSI META ADS (Q4)</h2>
+                        </div>
+                        <span class="text-[7.5px] font-mono text-slate-400">Weighted Margin (Asia 30% / Italy 20%)</span>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-2">
+                        <div class="card-inner p-2 rounded-md border-l-2 border-l-emerald-500 space-y-0.5">
+                            <p class="text-[7.5px] text-slate-400 font-medium">EST. GROSS MARGIN (~28%)</p>
+                            <p class="font-black font-mono text-emerald-400 text-xs" id="q4-margin-val">IDR 0</p>
+                            <p class="text-[7px] text-slate-500">Keuntungan Kotor Q4</p>
+                        </div>
+                        <div class="card-inner p-2 rounded-md border-l-2 border-l-purple-500 space-y-0.5">
+                            <p class="text-[7.5px] text-slate-400 font-medium">META ADS BUDGET (Q4)</p>
+                            <p class="font-black font-mono text-purple-300 text-xs">IDR 12.000.000</p>
+                            <p class="text-[7px] text-indigo-400 font-medium">Rp 2 Juta / Bulan (Capital-Efficient Allocation)</p>
+                        </div>
+                        <div class="card-inner p-2 rounded-md border-l-2 border-l-sky-500 space-y-0.5">
+                            <p class="text-[7.5px] text-slate-400 font-medium">ATTRIBUTED ROAS</p>
+                            <p class="font-black font-mono text-sky-400 text-xs" id="meta-roas-val">0.0x</p>
+                            <p class="text-[7px] text-slate-500">Target CPA < Rp 150rb</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-navy rounded-lg p-3 space-y-2 border border-slate-800">
+                    <div class="flex justify-between items-center border-b border-slate-800 pb-1.5">
+                        <div class="flex items-center space-x-1.5">
+                            <span class="text-amber-400 text-xs">📦</span>
+                            <h2 class="text-[9px] font-bold text-slate-200 tracking-wider uppercase">INDEKS KESIAPAN STOK & SUPPLY CHAIN (Q4 PEAK)</h2>
+                        </div>
+                        <span class="bg-emerald-950 border border-emerald-800 text-emerald-400 text-[7.5px] px-1.5 py-0.5 rounded font-bold font-mono">High Stock Readiness</span>
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <div class="flex justify-between items-center text-[8px]">
+                            <span class="text-slate-300">Kapasitas Gudang SKU Utama (Box, Bracket & Waterproof Bag)</span>
+                            <span class="text-emerald-400 font-mono font-bold">95% Optimal (DIO: 45 Days)</span>
+                        </div>
+                        <div class="w-full bg-slate-900 rounded-full h-1.5 overflow-hidden border border-slate-800">
+                            <div class="bg-gradient-to-r from-emerald-500 to-sky-400 h-1.5 rounded-full" style="width: 95%"></div>
+                        </div>
+
+                        <div class="grid grid-cols-4 gap-1.5 pt-1 text-[7.5px]">
+                            <div class="bg-slate-900/80 p-1.5 rounded text-center border border-slate-800">
+                                <p class="text-slate-400">Top & Side Case</p>
+                                <p class="text-emerald-400 font-bold">Stock Ready</p>
+                            </div>
+                            <div class="bg-slate-900/80 p-1.5 rounded text-center border border-slate-800">
+                                <p class="text-slate-400">Fitting Kits (AISI Models)</p>
+                                <p class="text-emerald-400 font-bold">Stock Ready</p>
+                            </div>
+                            <div class="bg-slate-900/80 p-1.5 rounded text-center border border-slate-800">
+                                <p class="text-slate-400">Waterproof Bag</p>
+                                <p class="text-emerald-400 font-bold">Stock Ready</p>
+                            </div>
+                            <div class="bg-slate-900/80 p-1.5 rounded text-center border border-slate-800">
+                                <p class="text-slate-400">Rain Coat</p>
+                                <p class="text-amber-400 font-bold">Restock Delay</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ROW 4: MEMO KEPUTUSAN EKSEKUTIF & REKOMENDASI BOD -->
+            <div class="card-navy rounded-lg p-3 space-y-2 border border-slate-800/80 bg-gradient-to-br from-[#0b0f19] to-[#070a12]">
+                <div class="flex justify-between items-center border-b border-slate-800 pb-1.5">
+                    <div class="flex items-center space-x-1.5">
+                        <span class="text-amber-400 text-xs">📝</span>
+                        <h2 class="text-[9px] font-bold text-amber-400 tracking-wider uppercase">MEMO KEPUTUSAN EKSEKUTIF & REKOMENDASI TINDAK LANJUT BOD</h2>
+                    </div>
+                    <span class="bg-slate-800 text-slate-300 text-[7.5px] px-2 py-0.5 rounded font-mono">Actionable Macro Strategy</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-2.5 text-[8px]">
+                    <div class="card-inner p-2.5 rounded-md space-y-1 border-t-2 border-t-amber-500">
+                        <p class="font-bold text-white uppercase">1. Approval Target (Blended Growth Model)</p>
+                        <p class="text-slate-300 leading-relaxed">Menyetujui <strong>Base Case Target</strong> yang memadukan pertumbuhan internal organik (+3%) dan penyesuaian pasar AISI (2,5%). Menyetujui anggaran hemat Meta Ads Rp 2 Juta/bulan sebagai pendorong omzet kelas atas.</p>
+                    </div>
+                    <div class="card-inner p-2.5 rounded-md space-y-1 border-t-2 border-t-blue-500">
+                        <p class="font-bold text-white uppercase">2. Penetrasi Segmen Scooter Maxi</p>
+                        <p class="text-slate-300 leading-relaxed">Memaksimalkan pemasaran digital pada grup pemilik Honda ADV/PCX dan Yamaha NMAX/XMAX yang merupakan pendorong utama tren touring akhir tahun, guna mempertahankan ROAS tinggi di atas 100x+.</p>
+                    </div>
+                    <div class="card-inner p-2.5 rounded-md space-y-1 border-t-2 border-t-emerald-500">
+                        <p class="font-bold text-white uppercase">3. Ketahanan Supply Chain Q4</p>
+                        <p class="text-slate-300 leading-relaxed">Menjaga indeks ketahanan stok (DIO: 45 Hari) agar siap melayani lonjakan transaksi *year-end closing*, serta mempercepat pemulihan inventaris *Rain Coat* sebelum puncak musim hujan November-Desember.</p>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script>
+        let rawForecastData = null;
+        let activeScenario = 'base';
+        let forecastChartInst = null;
+
+        async function loadForecastData() {
+            try {
+                const res = await fetch('/api/forecast-data');
+                const data = await res.json();
+                if (data && data.status === 'success') {
+                    rawForecastData = data;
+                    document.getElementById('last-updated-str').innerText = `Updated: ${data.last_updated} WIB`;
+                    updateScenarioUI(activeScenario);
+                }
+            } catch (err) {
+                console.error("Gagal memuat data forecasting:", err);
+            }
+        }
+
+        function switchScenario(scenarioKey) {
+            activeScenario = scenarioKey;
+            ['pessimistic', 'base', 'optimistic'].forEach(s => {
+                const btn = document.getElementById(`btn-${s}`);
+                if (s === scenarioKey) {
+                    btn.className = "px-2 py-0.5 rounded text-[8px] font-bold bg-amber-500 text-slate-950 shadow";
+                } else {
+                    btn.className = "px-2 py-0.5 rounded text-[8px] font-bold text-slate-400 hover:text-white transition-colors";
+                }
+            });
+            updateScenarioUI(scenarioKey);
+        }
+
+        function updateScenarioUI(scenarioKey) {
+            if (!rawForecastData) return;
+            const sc = rawForecastData.scenarios[scenarioKey];
+            document.getElementById('next-month-pred').innerText = sc.nov_str;
+            document.getElementById('total-3m-pred').innerText = sc.total_3m_str;
+            document.getElementById('q4-margin-val').innerText = sc.q4_margin;
+            document.getElementById('meta-roas-val').innerText = sc.roas;
+
+            document.getElementById('actual-ytd-val').innerText = sc.actual_ytd_str;
+            document.getElementById('proj-q4-val').innerText = sc.proj_q4_rem_str;
+            document.getElementById('total-fy2026-val').innerText = sc.total_fy2026_str;
+
+            renderForecastChart(rawForecastData, sc.chart_values);
+        }
+
+        function renderForecastChart(data, forecastValues) {
+            const ctx = document.getElementById('forecastChart').getContext('2d');
+            if (forecastChartInst) forecastChartInst.destroy();
+
+            const labels = [...data.historical_months, ...data.forecast_months];
+            const historicalDataset = [...data.historical_sales, null, null, null];
+            const lastHist = data.historical_sales[data.historical_sales.length - 1];
+            const forecastDataset = Array(data.historical_sales.length - 1).fill(null);
+            forecastDataset.push(lastHist);
+            forecastDataset.push(...forecastValues);
+
+            forecastChartInst = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Historis Sales 2026 (Juta IDR)',
+                            data: historicalDataset,
+                            borderColor: '#38bdf8',
+                            backgroundColor: 'rgba(56, 189, 248, 0.1)',
+                            borderWidth: 2, fill: true, tension: 0.3, pointRadius: 3
+                        },
+                        {
+                            label: 'Proyeksi Blended Engine Q4 (Juta IDR)',
+                            data: forecastDataset,
+                            borderColor: '#f59e0b',
+                            backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                            borderWidth: 2, borderDash: [5, 5], fill: true, tension: 0.3, pointRadius: 4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { labels: { color: '#cbd5e1', font: { size: 8 } } },
+                        tooltip: {
+                            backgroundColor: '#0f172a',
+                            titleColor: '#f8fafc',
+                            bodyColor: '#cbd5e1',
+                            borderColor: '#334155',
+                            borderWidth: 1,
+                            callbacks: {
+                                label: (context) => `${context.dataset.label}: IDR ${context.parsed.y} Juta`
+                            }
+                        }
+                    },
+                    scales: {
+                        x: { ticks: { color: '#94a3b8', font: { size: 8 } }, grid: { display: false } },
+                        y: {
+                            ticks: { color: '#64748b', font: { size: 8 }, callback: v => v + 'M' },
+                            grid: { color: 'rgba(255, 255, 255, 0.03)' }
+                        }
+                    }
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', loadForecastData);
+    </script>
+</body>
+</html>
