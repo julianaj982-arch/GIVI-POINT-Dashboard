@@ -265,13 +265,68 @@ def get_customer_root_cause():
 @app.route('/api/forecast-data', methods=['GET'])
 def get_forecast_data():
     try:
-        # 1. COBA BACA DARI Traffic_KPI DULU, KALAU GAK ADA BARU Sales_Data
         df_sales = read_sheet('Traffic_KPI')
         if df_sales is None or df_sales.empty:
             df_sales = read_sheet('Sales_Data')
         if df_sales is None or df_sales.empty:
-            return jsonify({"status": "error", "message": "Sheet Traffic_KPI / Sales_Data tidak ketemu"})
+            return jsonify({"status": "error", "message": "Sheet tidak ketemu"})
 
+        cols_lower = {c.lower(): c for c in df_sales.columns}
+        m_key = next((cols_lower[k] for k in cols_lower if 'month' in k or 'bulan' in k), df_sales.columns[0])
+        s_key = next((cols_lower[k] for k in cols_lower if 'sales' in k or 'mom_2026' in k or 'actual' in k), df_sales.columns[1])
+
+        hist_months = ["January","February","March","April","May","June","July","August","September","October"]
+        historical_sales = []
+        for m in hist_months:
+            m_row = df_sales[df_sales[m_key].astype(str).str.strip().str.capitalize() == m]
+            if not m_row.empty:
+                v = m_row[s_key].values[0]
+                if isinstance(v, str):
+                    v = v.replace('.','').replace(',','').replace('IDR','').strip()
+                historical_sales.append(float(v) if pd.notnull(v) and str(v) != '' else 0)
+            else:
+                historical_sales.append(0)
+
+        # Hitung dalam Juta biar gampang
+        hist_m = [round(x/1000000, 1) for x in historical_sales]
+        oct_actual = historical_sales[9] if len(historical_sales) > 9 else 0
+        avg_last3 = sum(historical_sales[7:10]) / 3 if sum(historical_sales[7:10]) > 0 else oct_actual
+        actual_ytd = sum(historical_sales)
+
+        def fmt(v): return f"IDR {v:,.0f}".replace(",", ".")
+
+        scenarios = {}
+        for key, mult_nov, mult_dec in [("pessimistic", 0.95, 0.95), ("base", 1.05, 1.05), ("optimistic", 1.12, 1.12)]:
+            nov = avg_last3 * mult_nov
+            dec = avg_last3 * mult_nov * mult_dec
+            total_3m = oct_actual + nov + dec
+            proj_q4 = nov + dec
+            total_fy = actual_ytd + proj_q4
+            margin = proj_q4 * 0.28
+            roas = round((proj_q4 / 12000000), 1) if proj_q4 > 0 else 0
+            scenarios[key] = {
+                "oct": oct_actual, "nov": nov, "dec": dec,
+                "nov_str": fmt(nov),
+                "total_3m_str": fmt(total_3m),
+                "q4_margin": fmt(margin),
+                "roas": f"{roas}x",
+                "actual_ytd_str": fmt(actual_ytd),
+                "proj_q4_rem_str": fmt(proj_q4),
+                "total_fy2026_str": fmt(total_fy),
+                "chart_values": [round(nov/1000000,1), round(dec/1000000,1), round(total_3m/1000000,1)]
+            }
+
+        return jsonify({
+            "status": "success",
+            "last_updated": datetime.datetime.now().strftime("%d %b %Y %H:%M"),
+            "historical_sales": hist_m,
+            "historical_months": ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct"],
+            "forecast_months": ["Nov","Dec"],
+            "scenarios": scenarios
+        })
+    except Exception as e:
+        print(f"FORECAST ERROR: {e}")
+        return jsonify({"status": "error", "message": str(e)})
         # 2. CARI KOLOM BULAN & SALES OTOMATIS (gak peduli namanya Month/Bulan, Sales/MOM_2026)
         cols_lower = {c.lower(): c for c in df_sales.columns}
         m_key = next((cols_lower[k] for k in cols_lower if 'month' in k or 'bulan' in k), df_sales.columns[0])
@@ -299,20 +354,42 @@ def get_forecast_data():
         oct_opt, nov_opt, dec_opt = oct_actual, avg_last3 * 1.12, avg_last3 * 1.12 * 1.12
         oct_pess, nov_pess, dec_pess = oct_actual, avg_last3 * 0.95, avg_last3 * 0.95 * 0.95
 
+                # Hitung dalam Juta biar gampang
+        hist_m = [round(x/1000000, 1) for x in historical_sales]
+        oct_actual = historical_sales[9] if len(historical_sales) > 9 else 0
+        avg_last3 = sum(historical_sales[7:10]) / 3 if sum(historical_sales[7:10]) > 0 else oct_actual
         actual_ytd = sum(historical_sales)
-        # ... (bagian bawah yang lu screenshot tadi, biarin aja, tinggal return)
+
+        def fmt(v): return f"IDR {v:,.0f}".replace(",", ".")
+
+        scenarios = {}
+        for key, mult_nov, mult_dec in [("pessimistic", 0.95, 0.95), ("base", 1.05, 1.05), ("optimistic", 1.12, 1.12)]:
+            nov = avg_last3 * mult_nov
+            dec = avg_last3 * mult_nov * mult_dec
+            total_3m = oct_actual + nov + dec
+            proj_q4 = nov + dec
+            total_fy = actual_ytd + proj_q4
+            margin = proj_q4 * 0.28
+            roas = round((proj_q4 / 12000000), 1) if proj_q4 > 0 else 0
+            scenarios[key] = {
+                "oct": oct_actual, "nov": nov, "dec": dec,
+                "nov_str": fmt(nov),
+                "total_3m_str": fmt(total_3m),
+                "q4_margin": fmt(margin),
+                "roas": f"{roas}x",
+                "actual_ytd_str": fmt(actual_ytd),
+                "proj_q4_rem_str": fmt(proj_q4),
+                "total_fy2026_str": fmt(total_fy),
+                "chart_values": [round(nov/1000000,1), round(dec/1000000,1), round(total_3m/1000000,1)]
+            }
 
         return jsonify({
             "status": "success",
             "last_updated": datetime.datetime.now().strftime("%d %b %Y %H:%M"),
-            "historical_sales": historical_sales,
-            "hist_months": hist_months,
-            "actual_ytd_total": actual_ytd,
-            "scenarios": {
-                "base": {"oct": oct_base, "nov": nov_base, "dec": dec_base},
-                "optimistic": {"oct": oct_opt, "nov": nov_opt, "dec": dec_opt},
-                "pessimistic": {"oct": oct_pess, "nov": nov_pess, "dec": dec_pess}
-            }
+            "historical_sales": hist_m,
+            "historical_months": ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct"],
+            "forecast_months": ["Nov","Dec"],
+            "scenarios": scenarios
         })
     except Exception as e:
         print(f"FORECAST ERROR: {e}")
