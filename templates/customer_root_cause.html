@@ -1,1 +1,363 @@
-<!DOCTYPE html><html lang="id" class="dark" id="html-root"><head>    <meta charset="UTF-8">    <meta name="viewport" content="width=device-width, initial-scale=1.0">    <title>CUSTOMER ROOT CAUSE ANALYSIS | GIVI DASHBOARD 2026</title>    <script src="https://cdn.tailwindcss.com"></script>    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>    <script>        tailwind.config = {            darkMode: 'class',            theme: {                extend: {                    colors: { navy: { 950: '#070a12', 900: '#0b0f19', 800: '#111827', 700: '#1f2937' } }                }            }        }    </script>    <style>        body { background-color: #070a12; color: #f1f5f9; font-family: ui-sans-serif, system-ui, sans-serif; }        .card-navy { background-color: #0b0f19; border: 1px solid #1e293b; box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5); }        .card-inner { background-color: #111827; border: 1px solid #1f2937; transition: all 0.2s ease; }        .card-inner:hover { border-color: #38bdf8; transform: translateY(-1px); }        ::-webkit-scrollbar { width: 5px; height: 5px; }        ::-webkit-scrollbar-track { background: #070a12; }        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }    </style></head><body class="h-screen flex overflow-hidden text-[10px]">    <!-- SIDEBAR -->    <aside class="w-52 bg-[#060911] border-r border-slate-800 flex flex-col justify-between shrink-0 h-full">        <div class="overflow-y-auto">            <div class="p-2 border-b border-slate-800 flex items-center justify-center bg-[#060911]">                <img src="{{ url_for('static', filename='logo.jpg') }}" alt="GIVI Point Logo" class="w-full h-24 object-contain rounded-md">            </div>            <nav class="p-2 space-y-1 mt-1">                <a href="/" class="flex items-center space-x-2 px-2.5 py-1.5 rounded text-slate-400 hover:bg-slate-800 transition-colors">                    <span>📊</span><span>Executive Dashboard</span>                </a>                <a href="/customer-root-cause" class="flex items-center space-x-2 px-2.5 py-1.5 rounded bg-blue-600 text-white font-semibold shadow">                    <span>💬</span><span>Customer Root Cause</span>                </a>                <a href="/forecast" class="flex items-center space-x-2 px-2.5 py-1.5 rounded text-amber-400 hover:bg-slate-800 transition-colors">                    <span>🔮</span><span>Forecasting</span>                </a>            </nav>        </div>        <div class="p-2 border-t border-slate-800 bg-[#05070d]">            <p class="text-[8px] text-slate-500 mb-1.5 leading-tight">We are more than a motorcycle accessories store. We give riders peace of mind.</p>            <div class="rounded overflow-hidden border border-slate-800">                <img src="{{ url_for('static', filename='motor.jpg') }}" alt="Givi Bike Touring" class="w-full h-14 object-cover opacity-90">            </div>        </div>    </aside>    <!-- MAIN CONTENT -->    <div class="flex-1 flex flex-col min-w-0 h-full overflow-y-auto bg-[#070a12]">                <!-- HEADER TOP BAR -->        <header class="bg-[#070a12] border-b border-slate-800 p-2 px-4 flex justify-between items-center sticky top-0 z-50 shadow-md">            <div class="flex items-center space-x-2">                <h1 class="text-xs font-bold text-white tracking-wide uppercase">CUSTOMER ROOT CAUSE & FEEDBACK INTELLIGENCE</h1>                <span class="bg-blue-950 border border-blue-800 text-blue-400 text-[8px] font-mono px-1.5 py-0.5 rounded">● Live Sheet Sync</span>                <span class="text-slate-500 text-[8px]" id="last-updated-str">Updated: -</span>            </div>            <div class="flex items-center space-x-2">                <button onclick="window.print()" class="bg-slate-800 hover:bg-slate-700 text-white text-[9px] px-2.5 py-1 rounded border border-slate-700 font-medium">🖨️ Export / Print Report</button>            </div>        </header>        <!-- BODY -->        <main class="p-3 space-y-3 pb-12">            <!-- ROW 1: TOP EXECUTIVE SUMMARY KPI CARDS -->            <div class="grid grid-cols-1 md:grid-cols-4 gap-2.5">                <div class="card-navy rounded-lg p-2.5 border-l-4 border-l-blue-500 space-y-1">                    <p class="text-[8px] text-slate-400 font-bold uppercase">TOTAL CUSTOMER CASES</p>                    <p class="text-base font-black text-white font-mono" id="total-cases-val">0</p>                    <p class="text-[7.5px] text-blue-400">Total Logged Feedback & Issues</p>                </div>                <div class="card-navy rounded-lg p-2.5 border-l-4 border-l-amber-500 space-y-1">                    <p class="text-[8px] text-slate-400 font-bold uppercase">TOP ROOT CAUSE CATEGORY</p>                    <p class="text-xs font-black text-amber-400 truncate" id="top-cat-val">-</p>                    <p class="text-[7.5px] text-slate-500">Primary Impact Factor</p>                </div>                <div class="card-navy rounded-lg p-2.5 border-l-4 border-l-rose-500 space-y-1">                    <p class="text-[8px] text-slate-400 font-bold uppercase">MOST FREQUENT ISSUE DETAIL</p>                    <p class="text-xs font-black text-rose-400 truncate" id="top-detail-val">-</p>                    <p class="text-[7.5px] text-slate-500">Main Customer Pain Point</p>                </div>                <div class="card-navy rounded-lg p-2.5 border-l-4 border-l-emerald-500 space-y-1">                    <p class="text-[8px] text-slate-400 font-bold uppercase">TOP MOTORCYCLE BRAND</p>                    <p class="text-xs font-black text-emerald-400 truncate" id="top-brand-val">-</p>                    <p class="text-[7.5px] text-slate-500">Highest Inquired Brand</p>                </div>            </div>            <!-- ROW 2: VISUAL ANALYTICS CHARTS -->            <div class="grid grid-cols-1 lg:grid-cols-2 gap-2.5">                                <!-- ROOT CAUSE CATEGORY DISTRIBUTION CHART -->                <div class="card-navy rounded-lg p-3 space-y-2 flex flex-col justify-between">                    <div class="flex justify-between items-center border-b border-slate-800 pb-1.5">                        <div class="flex items-center space-x-1.5">                            <span class="text-blue-400 text-xs">🎯</span>                            <h2 class="text-[9px] font-bold text-slate-200 tracking-wider uppercase">ROOT CAUSE CATEGORY DISTRIBUTION</h2>                        </div>                        <span class="text-[7.5px] font-mono text-slate-400">Categorical Breakdown</span>                    </div>                    <div class="h-[150px] relative w-full mt-1">                        <canvas id="categoryChart"></canvas>                    </div>                    <div class="text-[7.5px] text-slate-500 flex justify-between pt-1 border-t border-slate-800/80">                        <span>Source: Sheet <strong>Customer_Root_Cause</strong></span>                        <span class="text-blue-400 font-semibold">Operational Intelligence</span>                    </div>                </div>                <!-- MOTORCYCLE BRAND DISTRIBUTION CHART -->                <div class="card-navy rounded-lg p-3 space-y-2 flex flex-col justify-between">                    <div class="flex justify-between items-center border-b border-slate-800 pb-1.5">                        <div class="flex items-center space-x-1.5">                            <span class="text-amber-400 text-xs">🏍️</span>                            <h2 class="text-[9px] font-bold text-slate-200 tracking-wider uppercase">MOTORCYCLE BRAND & TYPE INQUIRIES</h2>                        </div>                        <span class="text-[7.5px] font-mono text-slate-400">Brand Volume Breakdown</span>                    </div>                    <div class="h-[150px] relative w-full mt-1">                        <canvas id="brandChart"></canvas>                    </div>                    <div class="text-[7.5px] text-slate-500 flex justify-between pt-1 border-t border-slate-800/80">                        <span>Customer Bike Demographic</span>                        <span class="text-amber-400 font-semibold">Givi Compatibility Insights</span>                    </div>                </div>            </div>            <!-- ROW 3: EXECUTIVE DATA TABLE WITH FILTERS -->            <div class="card-navy rounded-lg p-3 space-y-3 border border-slate-800/80 bg-gradient-to-br from-[#0b0f19] to-[#070a12]">                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-2 border-b border-slate-800/80 pb-2">                    <div class="flex items-center space-x-2">                        <span class="text-emerald-400 text-xs">📋</span>                        <h2 class="text-[9px] font-bold text-slate-200 tracking-wider uppercase">DETAILED CUSTOMER ROOT CAUSE LOGS</h2>                        <span class="bg-slate-800 text-slate-300 font-mono text-[8px] px-2 py-0.5 rounded-full" id="log-count-badge">0 Rows</span>                    </div>                    <!-- SEARCH & FILTERS -->                    <div class="flex flex-wrap items-center gap-2 w-full md:w-auto">                        <input type="text" id="search-input" onkeyup="filterTable()" placeholder="🔍 Cari Customer, Motor, Detail..." class="bg-slate-900 border border-slate-700 text-white text-[8.5px] rounded px-2.5 py-1 focus:outline-none focus:border-blue-500 w-full md:w-48 font-mono">                                                <select id="filter-category" onchange="filterTable()" class="bg-slate-900 border border-slate-700 text-slate-300 text-[8.5px] rounded px-2 py-1 focus:outline-none focus:border-blue-500 cursor-pointer">                            <option value="">Semua Kategori</option>                        </select>                        <select id="filter-brand" onchange="filterTable()" class="bg-slate-900 border border-slate-700 text-slate-300 text-[8.5px] rounded px-2 py-1 focus:outline-none focus:border-blue-500 cursor-pointer">                            <option value="">Semua Brand Motor</option>                        </select>                    </div>                </div>                <!-- TABLE -->                <div class="overflow-x-auto rounded-lg border border-slate-800">                    <table class="w-full text-left border-collapse text-[8.5px]" id="logs-table">                        <thead>                            <tr class="bg-slate-900/90 text-slate-400 border-b border-slate-800 font-bold uppercase tracking-wider font-mono">                                <th class="p-2 text-center w-8">No</th>                                <th class="p-2">Date</th>                                <th class="p-2">Customer</th>                                <th class="p-2">Brand & Type</th>                                <th class="p-2 text-center">Reason Code</th>                                <th class="p-2">Category</th>                                <th class="p-2">Root Cause Detail</th>                                <th class="p-2">Follow-up Action</th>                                <th class="p-2">Notes</th>                            </tr>                        </thead>                        <tbody id="table-body" class="divide-y divide-slate-800/60 font-mono">                            <!-- Dynamic Content -->                        </tbody>                    </table>                </div>            </div>        </main>    </div>    <!-- SCRIPTS -->    <script>        let rawRecordsData = [];        let categoryChartInst = null;        let brandChartInst = null;        async function loadCustomerRootCauseData() {            try {                const res = await fetch('/api/customer-root-cause');                const data = await res.json();                if (data && data.status === 'success') {                    document.getElementById('last-updated-str').innerText = `Updated: ${data.last_updated} WIB`;                    document.getElementById('total-cases-val').innerText = data.total_records;                    document.getElementById('top-cat-val').innerText = data.kpi.top_category;                    document.getElementById('top-detail-val').innerText = data.kpi.top_detail;                    document.getElementById('top-brand-val').innerText = data.kpi.top_brand;                    rawRecordsData = data.records;                    // Populate Select Options                    populateFilters(data.categories_breakdown, data.brands_breakdown);                    // Render Analytics Charts                    renderCategoryChart(data.categories_breakdown);                    renderBrandChart(data.brands_breakdown);                    // Render Table Logs                    renderTable(rawRecordsData);                }            } catch (err) {                console.error("Gagal sinkronisasi data Customer Root Cause:", err);            }        }        function populateFilters(categories, brands) {            const catSelect = document.getElementById('filter-category');            catSelect.innerHTML = '<option value="">Semua Kategori</option>' + categories.map(c => `<option value="${c.name}">${c.name}</option>`).join('');            const brandSelect = document.getElementById('filter-brand');            brandSelect.innerHTML = '<option value="">Semua Brand Motor</option>' + brands.map(b => `<option value="${b.name}">${b.name}</option>`).join('');        }        function renderTable(records) {            const tbody = document.getElementById('table-body');            document.getElementById('log-count-badge').innerText = `${records.length} Rows`;            if (!records || records.length === 0) {                tbody.innerHTML = `<tr><td colspan="9" class="p-4 text-center text-slate-500 italic">Tidak ada data customer root cause yang sesuai.</td></tr>`;                return;            }            tbody.innerHTML = records.map((r, i) => {                let catBadgeClass = "bg-slate-900 text-slate-300 border-slate-800";                if (r.category.toLowerCase().includes('customer')) catBadgeClass = "bg-amber-950/80 text-amber-300 border-amber-800/80";                else if (r.category.toLowerCase().includes('product')) catBadgeClass = "bg-sky-950/80 text-sky-300 border-sky-800/80";                else if (r.category.toLowerCase().includes('service')) catBadgeClass = "bg-purple-950/80 text-purple-300 border-purple-800/80";                return `                    <tr class="hover:bg-slate-800/50 transition-colors border-b border-slate-800/40">                        <td class="p-2 text-center text-slate-500 font-bold">${i + 1}</td>                        <td class="p-2 text-slate-400 whitespace-nowrap">${r.date}</td>                        <td class="p-2 font-bold text-white">${r.customer}</td>                        <td class="p-2"><span class="text-amber-400 font-bold">${r.brand}</span> <span class="text-slate-400">(${r.type})</span></td>                        <td class="p-2 text-center"><span class="bg-slate-900 text-slate-400 px-1.5 py-0.5 rounded border border-slate-800 font-mono text-[7.5px]">${r.reason_code}</span></td>                        <td class="p-2"><span class="px-2 py-0.5 rounded font-bold border ${catBadgeClass} text-[7.5px]">${r.category}</span></td>                        <td class="p-2 text-slate-200 font-medium">${r.detail}</td>                        <td class="p-2 text-emerald-400 font-semibold">${r.action}</td>                        <td class="p-2 text-slate-400 italic">${r.notes}</td>                    </tr>                `;            }).join('');        }        function filterTable() {            const searchVal = document.getElementById('search-input').value.toLowerCase();            const catVal = document.getElementById('filter-category').value.toLowerCase();            const brandVal = document.getElementById('filter-brand').value.toLowerCase();            const filtered = rawRecordsData.filter(r => {                const matchSearch = r.customer.toLowerCase().includes(searchVal) ||                                    r.brand.toLowerCase().includes(searchVal) ||                                    r.type.toLowerCase().includes(searchVal) ||                                    r.detail.toLowerCase().includes(searchVal) ||                                    r.notes.toLowerCase().includes(searchVal);                const matchCat = catVal === "" || r.category.toLowerCase() === catVal;                const matchBrand = brandVal === "" || r.brand.toLowerCase() === brandVal;                return matchSearch && matchCat && matchBrand;            });            renderTable(filtered);        }        function renderCategoryChart(categories) {            const ctx = document.getElementById('categoryChart').getContext('2d');            if (categoryChartInst) categoryChartInst.destroy();            categoryChartInst = new Chart(ctx, {                type: 'bar',                data: {                    labels: categories.map(c => c.name),                    datasets: [{                        label: 'Jumlah Case',                        data: categories.map(c => c.count),                        backgroundColor: ['#f59e0b', '#38bdf8', '#a855f7', '#10b981'],                        borderRadius: 4,                        barThickness: 20                    }]                },                options: {                    responsive: true,                    maintainAspectRatio: false,                    plugins: { legend: { display: false } },                    scales: {                        x: { ticks: { color: '#94a3b8', font: { size: 8 } }, grid: { display: false } },                        y: { ticks: { color: '#64748b', font: { size: 8 }, stepSize: 1 }, grid: { color: 'rgba(255,255,255,0.03)' } }                    }                }            });        }        function renderBrandChart(brands) {            const ctx = document.getElementById('brandChart').getContext('2d');            if (brandChartInst) brandChartInst.destroy();            brandChartInst = new Chart(ctx, {                type: 'doughnut',                data: {                    labels: brands.map(b => b.name),                    datasets: [{                        data: brands.map(b => b.count),                        backgroundColor: ['#ef4444', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6'],                        borderWidth: 2,                        borderColor: '#0b0f19'                    }]                },                options: {                    responsive: true,                    maintainAspectRatio: false,                    plugins: {                        legend: { position: 'right', labels: { color: '#cbd5e1', font: { size: 8 }, boxWidth: 10 } }                    },                    cutout: '65%'                }            });        }        document.addEventListener('DOMContentLoaded', loadCustomerRootCauseData);    </script></body></html>
+<!DOCTYPE html>
+<html lang="id" class="dark" id="html-root">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CUSTOMER ROOT CAUSE ANALYSIS | GIVI DASHBOARD 2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { navy: { 950: '#070a12', 900: '#0b0f19', 800: '#111827', 700: '#1f2937' } }
+                }
+            }
+        }
+    </script>
+    <style>
+    body { background-color: #070a12; color: #f1f5f9; font-family: ui-sans-serif, system-ui, sans-serif; }
+    .card-navy { background-color: #0b0f19; border: 1px solid #1e293b; box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5); }
+    .card-inner { background-color: #111827; border: 1px solid #1f2937; }
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #070a12; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }
+    canvas { max-width: 100% !important; }
+    /* FIX HP */
+    @media (max-width: 768px) {
+      body { font-size: 13px !important; }
+      aside { position: sticky !important; top: 0; z-index: 60; width: 100% !important; }
+      aside img { height: 36px !important; width: auto !important; }
+      aside nav { display: flex !important; flex-direction: row !important; overflow-x: auto !important; padding: 6px !important; gap: 6px !important; }
+      aside nav a { font-size: 11px !important; padding: 7px 10px !important; white-space: nowrap; flex-shrink: 0; }
+      header { flex-direction: column !important; align-items: flex-start !important; gap: 8px !important; }
+      header h1 { font-size: 12px !important; line-height: 1.3; }
+      main { padding: 10px !important; }
+      main .grid { grid-template-columns: 1fr !important; }
+      .h-\[150px\] { height: 230px !important; }
+      /* Tabel: bisa di-swipe ke samping, gak ketumpuk */
+      table { min-width: 700px; }
+      #search-input, #filter-category, #filter-brand { width: 100% !important; font-size: 12px !important; padding: 8px !important; }
+    }
+</style>
+</head>
+<body class="min-h-screen flex flex-col md:flex-row md:h-screen md:overflow-hidden text-[10px]">
+
+    <!-- SIDEBAR -->
+    <aside class="w-full md:w-52 bg-[#060911] border-b md:border-b-0 md:border-r border-slate-800 flex flex-col md:justify-between shrink-0 md:h-full">
+        <div class="overflow-y-auto">
+            <div class="p-2 border-b border-slate-800 flex items-center justify-center bg-[#060911]">
+                <img src="{{ url_for('static', filename='logo.jpg') }}" onerror="this.outerHTML='<div style=\'font-weight:900;color:white;padding:8px;font-size:14px\'>GIVI POINT</div>'" alt="GIVI Point Logo" class="w-32 md:w-full h-12 md:h-24 object-contain rounded-md">
+            </div>
+
+            <nav class="p-2 space-y-1 mt-1">
+                <a href="/" class="flex items-center space-x-2 px-2.5 py-1.5 rounded text-slate-400 hover:bg-slate-800 transition-colors">
+                    <span>📊</span><span>Executive Dashboard</span>
+                </a>
+                <a href="/customer-root-cause" class="flex items-center space-x-2 px-2.5 py-1.5 rounded bg-blue-600 text-white font-semibold shadow">
+                    <span>💬</span><span>Customer Root Cause</span>
+                </a>
+                <a href="/forecast" class="flex items-center space-x-2 px-2.5 py-1.5 rounded text-amber-400 hover:bg-slate-800 transition-colors">
+                    <span>🔮</span><span>Forecasting</span>
+                </a>
+            </nav>
+        </div>
+
+        <div class="hidden md:block p-2 border-t border-slate-800 bg-[#05070d]">
+            <p class="text-[8px] text-slate-500 mb-1.5 leading-tight">We are more than a motorcycle accessories store. We give riders peace of mind.</p>
+            <div class="rounded overflow-hidden border border-slate-800">
+                <img src="{{ url_for('static', filename='motor.jpg') }}" alt="Givi Bike Touring" class="w-full h-14 object-cover opacity-90">
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <div class="flex-1 flex flex-col min-w-0 w-full md:h-full md:overflow-y-auto bg-[#070a12]">
+        
+        <!-- HEADER TOP BAR -->
+        <header class="bg-[#070a12] border-b border-slate-800 p-2 px-4 flex flex-wrap gap-2 justify-between items-center md:sticky md:top-0 z-50 shadow-md">
+            <div class="flex items-center space-x-2">
+                <h1 class="text-xs font-bold text-white tracking-wide uppercase">CUSTOMER ROOT CAUSE & FEEDBACK INTELLIGENCE</h1>
+                <span class="bg-blue-950 border border-blue-800 text-blue-400 text-[8px] font-mono px-1.5 py-0.5 rounded">● Live Sheet Sync</span>
+                <span class="text-slate-500 text-[8px]" id="last-updated-str">Updated: -</span>
+            </div>
+            <div class="flex items-center space-x-2">
+                <button onclick="window.print()" class="bg-slate-800 hover:bg-slate-700 text-white text-[9px] px-2.5 py-1 rounded border border-slate-700 font-medium">🖨️ Export / Print Report</button>
+            </div>
+        </header>
+
+        <!-- BODY -->
+        <main class="p-3 space-y-3 pb-12">
+
+            <!-- ROW 1: TOP EXECUTIVE SUMMARY KPI CARDS -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-2.5">
+                <div class="card-navy rounded-lg p-2.5 border-l-4 border-l-blue-500 space-y-1">
+                    <p class="text-[8px] text-slate-400 font-bold uppercase">TOTAL CUSTOMER CASES</p>
+                    <p class="text-base font-black text-white font-mono" id="total-cases-val">0</p>
+                    <p class="text-[7.5px] text-blue-400">Total Logged Feedback & Issues</p>
+                </div>
+                <div class="card-navy rounded-lg p-2.5 border-l-4 border-l-amber-500 space-y-1">
+                    <p class="text-[8px] text-slate-400 font-bold uppercase">TOP ROOT CAUSE CATEGORY</p>
+                    <p class="text-xs font-black text-amber-400 truncate" id="top-cat-val">-</p>
+                    <p class="text-[7.5px] text-slate-500">Primary Impact Factor</p>
+                </div>
+                <div class="card-navy rounded-lg p-2.5 border-l-4 border-l-rose-500 space-y-1">
+                    <p class="text-[8px] text-slate-400 font-bold uppercase">MOST FREQUENT ISSUE DETAIL</p>
+                    <p class="text-xs font-black text-rose-400 truncate" id="top-detail-val">-</p>
+                    <p class="text-[7.5px] text-slate-500">Main Customer Pain Point</p>
+                </div>
+                <div class="card-navy rounded-lg p-2.5 border-l-4 border-l-emerald-500 space-y-1">
+                    <p class="text-[8px] text-slate-400 font-bold uppercase">TOP MOTORCYCLE BRAND</p>
+                    <p class="text-xs font-black text-emerald-400 truncate" id="top-brand-val">-</p>
+                    <p class="text-[7.5px] text-slate-500">Highest Inquired Brand</p>
+                </div>
+            </div>
+
+            <!-- ROW 2: VISUAL ANALYTICS CHARTS -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-2.5">
+                
+                <!-- ROOT CAUSE CATEGORY DISTRIBUTION CHART -->
+                <div class="card-navy rounded-lg p-3 space-y-2 flex flex-col justify-between">
+                    <div class="flex justify-between items-center border-b border-slate-800 pb-1.5">
+                        <div class="flex items-center space-x-1.5">
+                            <span class="text-blue-400 text-xs">🎯</span>
+                            <h2 class="text-[9px] font-bold text-slate-200 tracking-wider uppercase">ROOT CAUSE CATEGORY DISTRIBUTION</h2>
+                        </div>
+                        <span class="text-[7.5px] font-mono text-slate-400">Categorical Breakdown</span>
+                    </div>
+
+                    <div class="h-[150px] relative w-full mt-1">
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+
+                    <div class="text-[7.5px] text-slate-500 flex justify-between pt-1 border-t border-slate-800/80">
+                        <span>Source: Sheet <strong>Customer_Root_Cause</strong></span>
+                        <span class="text-blue-400 font-semibold">Operational Intelligence</span>
+                    </div>
+                </div>
+
+                <!-- MOTORCYCLE BRAND DISTRIBUTION CHART -->
+                <div class="card-navy rounded-lg p-3 space-y-2 flex flex-col justify-between">
+                    <div class="flex justify-between items-center border-b border-slate-800 pb-1.5">
+                        <div class="flex items-center space-x-1.5">
+                            <span class="text-amber-400 text-xs">🏍️</span>
+                            <h2 class="text-[9px] font-bold text-slate-200 tracking-wider uppercase">MOTORCYCLE BRAND & TYPE INQUIRIES</h2>
+                        </div>
+                        <span class="text-[7.5px] font-mono text-slate-400">Brand Volume Breakdown</span>
+                    </div>
+
+                    <div class="h-[150px] relative w-full mt-1">
+                        <canvas id="brandChart"></canvas>
+                    </div>
+
+                    <div class="text-[7.5px] text-slate-500 flex justify-between pt-1 border-t border-slate-800/80">
+                        <span>Customer Bike Demographic</span>
+                        <span class="text-amber-400 font-semibold">Givi Compatibility Insights</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ROW 3: EXECUTIVE DATA TABLE WITH FILTERS -->
+            <div class="card-navy rounded-lg p-3 space-y-3 border border-slate-800/80 bg-gradient-to-br from-[#0b0f19] to-[#070a12]">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-2 border-b border-slate-800/80 pb-2">
+                    <div class="flex items-center space-x-2">
+                        <span class="text-emerald-400 text-xs">📋</span>
+                        <h2 class="text-[9px] font-bold text-slate-200 tracking-wider uppercase">DETAILED CUSTOMER ROOT CAUSE LOGS</h2>
+                        <span class="bg-slate-800 text-slate-300 font-mono text-[8px] px-2 py-0.5 rounded-full" id="log-count-badge">0 Rows</span>
+                    </div>
+
+                    <!-- SEARCH & FILTERS -->
+                    <div class="flex flex-wrap items-center gap-2 w-full md:w-auto">
+                        <input type="text" id="search-input" onkeyup="filterTable()" placeholder="🔍 Cari Customer, Motor, Detail..." class="bg-slate-900 border border-slate-700 text-white text-[8.5px] rounded px-2.5 py-1 focus:outline-none focus:border-blue-500 w-full md:w-48 font-mono">
+                        
+                        <select id="filter-category" onchange="filterTable()" class="bg-slate-900 border border-slate-700 text-slate-300 text-[8.5px] rounded px-2 py-1 focus:outline-none focus:border-blue-500 cursor-pointer">
+                            <option value="">Semua Kategori</option>
+                        </select>
+
+                        <select id="filter-brand" onchange="filterTable()" class="bg-slate-900 border border-slate-700 text-slate-300 text-[8.5px] rounded px-2 py-1 focus:outline-none focus:border-blue-500 cursor-pointer">
+                            <option value="">Semua Brand Motor</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- TABLE -->
+                <div class="overflow-x-auto rounded-lg border border-slate-800">
+                    <table class="w-full text-left border-collapse text-[8.5px]" id="logs-table">
+                        <thead>
+                            <tr class="bg-slate-900/90 text-slate-400 border-b border-slate-800 font-bold uppercase tracking-wider font-mono">
+                                <th class="p-2 text-center w-8">No</th>
+                                <th class="p-2">Date</th>
+                                <th class="p-2">Customer</th>
+                                <th class="p-2">Brand & Type</th>
+                                <th class="p-2 text-center">Reason Code</th>
+                                <th class="p-2">Category</th>
+                                <th class="p-2">Root Cause Detail</th>
+                                <th class="p-2">Follow-up Action</th>
+                                <th class="p-2">Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-body" class="divide-y divide-slate-800/60 font-mono">
+                            <!-- Dynamic Content -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script>
+        let rawRecordsData = [];
+        let categoryChartInst = null;
+        let brandChartInst = null;
+
+        async function loadCustomerRootCauseData() {
+            try {
+                const res = await fetch('/api/customer-root-cause');
+                const data = await res.json();
+
+                if (data && data.status === 'success') {
+                    document.getElementById('last-updated-str').innerText = `Updated: ${data.last_updated} WIB`;
+                    document.getElementById('total-cases-val').innerText = data.total_records;
+                    document.getElementById('top-cat-val').innerText = data.kpi.top_category;
+                    document.getElementById('top-detail-val').innerText = data.kpi.top_detail;
+                    document.getElementById('top-brand-val').innerText = data.kpi.top_brand;
+
+                    rawRecordsData = data.records;
+
+                    // Populate Select Options
+                    populateFilters(data.categories_breakdown, data.brands_breakdown);
+
+                    // Render Analytics Charts
+                    renderCategoryChart(data.categories_breakdown);
+                    renderBrandChart(data.brands_breakdown);
+
+                    // Render Table Logs
+                    renderTable(rawRecordsData);
+                }
+            } catch (err) {
+                console.error("Gagal sinkronisasi data Customer Root Cause:", err);
+            }
+        }
+
+        function populateFilters(categories, brands) {
+            const catSelect = document.getElementById('filter-category');
+            catSelect.innerHTML = '<option value="">Semua Kategori</option>' + categories.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
+
+            const brandSelect = document.getElementById('filter-brand');
+            brandSelect.innerHTML = '<option value="">Semua Brand Motor</option>' + brands.map(b => `<option value="${b.name}">${b.name}</option>`).join('');
+        }
+
+        function renderTable(records) {
+            const tbody = document.getElementById('table-body');
+            document.getElementById('log-count-badge').innerText = `${records.length} Rows`;
+
+            if (!records || records.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="9" class="p-4 text-center text-slate-500 italic">Tidak ada data customer root cause yang sesuai.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = records.map((r, i) => {
+                let catBadgeClass = "bg-slate-900 text-slate-300 border-slate-800";
+                if (r.category.toLowerCase().includes('customer')) catBadgeClass = "bg-amber-950/80 text-amber-300 border-amber-800/80";
+                else if (r.category.toLowerCase().includes('product')) catBadgeClass = "bg-sky-950/80 text-sky-300 border-sky-800/80";
+                else if (r.category.toLowerCase().includes('service')) catBadgeClass = "bg-purple-950/80 text-purple-300 border-purple-800/80";
+
+                return `
+                    <tr class="hover:bg-slate-800/50 transition-colors border-b border-slate-800/40">
+                        <td class="p-2 text-center text-slate-500 font-bold">${i + 1}</td>
+                        <td class="p-2 text-slate-400 whitespace-nowrap">${r.date}</td>
+                        <td class="p-2 font-bold text-white">${r.customer}</td>
+                        <td class="p-2"><span class="text-amber-400 font-bold">${r.brand}</span> <span class="text-slate-400">(${r.type})</span></td>
+                        <td class="p-2 text-center"><span class="bg-slate-900 text-slate-400 px-1.5 py-0.5 rounded border border-slate-800 font-mono text-[7.5px]">${r.reason_code}</span></td>
+                        <td class="p-2"><span class="px-2 py-0.5 rounded font-bold border ${catBadgeClass} text-[7.5px]">${r.category}</span></td>
+                        <td class="p-2 text-slate-200 font-medium">${r.detail}</td>
+                        <td class="p-2 text-emerald-400 font-semibold">${r.action}</td>
+                        <td class="p-2 text-slate-400 italic">${r.notes}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function filterTable() {
+            const searchVal = document.getElementById('search-input').value.toLowerCase();
+            const catVal = document.getElementById('filter-category').value.toLowerCase();
+            const brandVal = document.getElementById('filter-brand').value.toLowerCase();
+
+            const filtered = rawRecordsData.filter(r => {
+                const matchSearch = r.customer.toLowerCase().includes(searchVal) ||
+                                    r.brand.toLowerCase().includes(searchVal) ||
+                                    r.type.toLowerCase().includes(searchVal) ||
+                                    r.detail.toLowerCase().includes(searchVal) ||
+                                    r.notes.toLowerCase().includes(searchVal);
+
+                const matchCat = catVal === "" || r.category.toLowerCase() === catVal;
+                const matchBrand = brandVal === "" || r.brand.toLowerCase() === brandVal;
+
+                return matchSearch && matchCat && matchBrand;
+            });
+
+            renderTable(filtered);
+        }
+
+        function renderCategoryChart(categories) {
+            const ctx = document.getElementById('categoryChart').getContext('2d');
+            if (categoryChartInst) categoryChartInst.destroy();
+
+            categoryChartInst = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: categories.map(c => c.name),
+                    datasets: [{
+                        label: 'Jumlah Case',
+                        data: categories.map(c => c.count),
+                        backgroundColor: ['#f59e0b', '#38bdf8', '#a855f7', '#10b981'],
+                        borderRadius: 4,
+                        barThickness: 20
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { ticks: { color: '#94a3b8', font: { size: 8 } }, grid: { display: false } },
+                        y: { ticks: { color: '#64748b', font: { size: 8 }, stepSize: 1 }, grid: { color: 'rgba(255,255,255,0.03)' } }
+                    }
+                }
+            });
+        }
+
+        function renderBrandChart(brands) {
+            const ctx = document.getElementById('brandChart').getContext('2d');
+            if (brandChartInst) brandChartInst.destroy();
+
+            brandChartInst = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: brands.map(b => b.name),
+                    datasets: [{
+                        data: brands.map(b => b.count),
+                        backgroundColor: ['#ef4444', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6'],
+                        borderWidth: 2,
+                        borderColor: '#0b0f19'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'right', labels: { color: '#cbd5e1', font: { size: 8 }, boxWidth: 10 } }
+                    },
+                    cutout: '65%'
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', loadCustomerRootCauseData);
+    </script>
+</body>
+</html>
