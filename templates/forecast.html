@@ -17,22 +17,40 @@
         }
     </script>
     <style>
-        body { background-color: #070a12; color: #f1f5f9; font-family: ui-sans-serif, system-ui, sans-serif; }
-        .card-navy { background-color: #0b0f19; border: 1px solid #1e293b; box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5); }
-        .card-inner { background-color: #111827; border: 1px solid #1f2937; transition: all 0.2s ease; }
-        .card-inner:hover { border-color: #38bdf8; transform: translateY(-1px); }
-        ::-webkit-scrollbar { width: 5px; height: 5px; }
-        ::-webkit-scrollbar-track { background: #070a12; }
-        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }
-    </style>
+    body { background-color: #070a12; color: #f1f5f9; font-family: ui-sans-serif, system-ui, sans-serif; }
+    .card-navy { background-color: #0b0f19; border: 1px solid #1e293b; box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5); }
+    .card-inner { background-color: #111827; border: 1px solid #1f2937; }
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #070a12; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }
+    canvas { max-width: 100% !important; }
+    /* FIX HP - FORECAST */
+    @media (max-width: 768px) {
+      body { font-size: 13px !important; }
+      aside { position: sticky !important; top: 0; z-index: 60; width: 100% !important; }
+      aside img { height: 36px !important; width: auto !important; }
+      aside nav { display: flex !important; flex-direction: row !important; overflow-x: auto !important; padding: 6px !important; gap: 6px !important; }
+      aside nav a { font-size: 11px !important; padding: 7px 10px !important; white-space: nowrap; flex-shrink: 0; }
+      header { flex-direction: column !important; align-items: flex-start !important; gap: 8px !important; }
+      header h1 { font-size: 12px !important; line-height: 1.3; }
+      main { padding: 10px !important; }
+      main .grid { grid-template-columns: 1fr !important; }
+      .h-\[170px\] { height: 240px !important; }
+      /* Tombol skenario biar gak ketumpuk */
+      #btn-pessimistic, #btn-base, #btn-optimistic { font-size: 11px !important; padding: 6px 10px !important; }
+      /* Card margin biar lega */
+      .card-inner { padding: 10px !important; }
+      .card-inner p { font-size: 11px !important; }
+    }
+</style>
 </head>
-<body class="h-screen flex overflow-hidden text-[10px]">
+<body class="min-h-screen flex flex-col md:flex-row md:h-screen md:overflow-hidden text-[10px]">
 
     <!-- SIDEBAR -->
-    <aside class="w-52 bg-[#060911] border-r border-slate-800 flex flex-col justify-between shrink-0 h-full">
+    <aside class="w-full md:w-52 bg-[#060911] border-b md:border-b-0 md:border-r border-slate-800 flex flex-col md:justify-between shrink-0 md:h-full">
         <div class="overflow-y-auto">
             <div class="p-2 border-b border-slate-800 flex items-center justify-center bg-[#060911]">
-                <img src="{{ url_for('static', filename='logo.jpg') }}" alt="GIVI Point Logo" class="w-full h-24 object-contain rounded-md">
+                <img src="{{ url_for('static', filename='logo.jpg') }}" onerror="this.outerHTML='<div style=\'font-weight:900;color:white;padding:8px;font-size:14px\'>GIVI POINT</div>'" alt="GIVI Point Logo" class="w-32 md:w-full h-12 md:h-24 object-contain rounded-md">
             </div>
 
             <nav class="p-2 space-y-1 mt-1">
@@ -48,7 +66,7 @@
             </nav>
         </div>
 
-        <div class="p-2 border-t border-slate-800 bg-[#05070d]">
+        <div class="hidden md:block p-2 border-t border-slate-800 bg-[#05070d]">
             <p class="text-[8px] text-slate-500 mb-1.5 leading-tight">We are more than a motorcycle accessories store. We give riders peace of mind.</p>
             <div class="rounded overflow-hidden border border-slate-800">
                 <img src="{{ url_for('static', filename='motor.jpg') }}" alt="Givi Bike Touring" class="w-full h-14 object-cover opacity-90">
@@ -57,10 +75,10 @@
     </aside>
 
     <!-- MAIN CONTENT -->
-    <div class="flex-1 flex flex-col min-w-0 h-full overflow-y-auto bg-[#070a12]">
+    <div class="flex-1 flex flex-col min-w-0 w-full md:h-full md:overflow-y-auto bg-[#070a12]">
         
         <!-- HEADER TOP BAR -->
-        <header class="bg-[#070a12] border-b border-slate-800 p-2 px-4 flex justify-between items-center sticky top-0 z-50 shadow-md">
+        <header class="bg-[#070a12] border-b border-slate-800 p-2 px-4 flex flex-wrap gap-2 justify-between items-center md:sticky md:top-0 z-50 shadow-md">
             <div class="flex items-center space-x-2">
                 <h1 class="text-xs font-bold text-white tracking-wide uppercase">PROYEKSI & PERAMALAN BISNIS (FORECASTING)</h1>
                 <span class="bg-amber-950 border border-amber-800 text-amber-400 text-[8px] font-mono px-1.5 py-0.5 rounded">● Blended Engine (3% Internal + 2.5% AISI)</span>
