@@ -28,17 +28,13 @@
     @media (max-width: 768px) {
       body { font-size: 13px !important; }
       aside { position: sticky !important; top: 0; z-index: 60; width: 100% !important; }
-      aside img { height: 36px !important; width: auto !important; }
       aside nav { display: flex !important; flex-direction: row !important; overflow-x: auto !important; padding: 6px !important; gap: 6px !important; }
       aside nav a { font-size: 11px !important; padding: 7px 10px !important; white-space: nowrap; flex-shrink: 0; }
       header { flex-direction: column !important; align-items: flex-start !important; gap: 8px !important; }
       header h1 { font-size: 12px !important; line-height: 1.3; }
       main { padding: 10px !important; }
       main .grid { grid-template-columns: 1fr !important; }
-      .h-\[170px\] { height: 240px !important; }
-      /* Tombol skenario biar gak ketumpuk */
       #btn-pessimistic, #btn-base, #btn-optimistic { font-size: 11px !important; padding: 6px 10px !important; }
-      /* Card margin biar lega */
       .card-inner { padding: 10px !important; }
       .card-inner p { font-size: 11px !important; }
     }
@@ -79,8 +75,8 @@
             </div>
         </header>
 
-        <!-- BODY -->
-        <main class="w-full md:flex-1 overflow-y-auto
+        <!-- BODY - UDAH DIBENERIN, TADINYA TAG MAIN GAK KETUTUP -->
+        <main class="p-3 space-y-3 pb-12 w-full">
 
             <!-- ROW 1: TOP FORECAST KPI CARDS -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-2.5">
@@ -270,7 +266,7 @@
         </main>
     </div>
 
-    <!-- SCRIPTS -->
+    <!-- SCRIPTS - SAMA PERSIS, GAK GUE UBAH -->
     <script>
         let rawForecastData = null;
         let activeScenario = 'base';
