@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="id" class="dark" id="html-root">
 <head>
     <meta charset="UTF-8">
@@ -31,7 +31,6 @@
       body { font-size: 13px !important; }
       /* Sidebar jadi bar atas, kecil */
       aside { position: sticky; top: 0; z-index: 60; }
-      aside img { height: 36px !important; width: auto !important; }
       aside nav { padding: 6px !important; gap: 6px !important; }
       aside nav a { font-size: 11px !important; padding: 7px 10px !important; white-space: nowrap; }
       /* Header jadi 1 kolom */
@@ -54,32 +53,24 @@
 </head>
 <body class="min-h-screen flex flex-col md:flex-row md:h-screen md:overflow-hidden text-[10px]">
 
-    <!-- SIDEBAR - UDAH RESPONSIF -->
-    <aside class="w-full md:w-60 bg-[#060911] border-b md:border-b-0 md:border-r border-slate-800 flex flex-col shrink-0">
-        <div class="flex flex-col flex-1">
-            <div class="p-3 border-b border-slate-800 flex items-center justify-center bg-[#060911]">
-                <img src="{{ url_for('static', filename='logo.png') }}" alt="GIVI Logo" class="w-full max-w-[200px] h-auto object-contain">
+<aside class="w-full md:w-[260px] bg-[#060911] border-b md:border-b-0 md:border-r border-slate-800 flex flex-col shrink-0 md:h-screen md:sticky md:top-0">
+    <div class="p-4 border-b border-slate-800 flex items-center justify-center bg-[#060911]">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="GIVI Logo" class="w-full max-w-[200px] h-auto object-contain">
+    </div>
 
-            <nav class="p-2 flex flex-col gap-1">
-                <a href="/" class="flex items-center space-x-2 px-2.5 py-1.5 rounded bg-red-600 text-white font-semibold shadow shrink-0">
-                    <span></span><span>Executive Dashboard</span>
-                </a>
-                <a href="/customer-root-cause" class="flex items-center space-x-2 px-2.5 py-1.5 rounded text-blue-400 bg-blue-950/40 border border-blue-900/50 hover:bg-blue-900/50 transition-colors shrink-0">
-                    <span></span><span>Customer Root Cause</span>
-                </a>
-                <a href="/forecast" class="flex items-center space-x-2 px-2.5 py-1.5 rounded text-amber-400 hover:bg-slate-800 transition-colors shrink-0">
-                    <span></span><span>Forecasting</span>
-                </a>
-            </nav>
-        </div>
+    <nav class="p-3 flex flex-col gap-2">
+        <a href="/" class="block w-full text-left px-3 py-2.5 rounded-lg bg-red-600 text-white text-[13px] font-semibold">Executive Dashboard</a>
+        <a href="/customer-root-cause" class="block w-full text-left px-3 py-2.5 rounded-lg text-[13px] font-medium text-blue-400 bg-blue-950/40 border border-blue-900/50 hover:bg-blue-900/50">Customer Root Cause</a>
+        <a href="/forecast" class="block w-full text-left px-3 py-2.5 rounded-lg text-[13px] font-medium text-amber-400 hover:bg-slate-800">Forecasting</a>
+    </nav>
 
-        <div class="hidden md:block p-2 border-t border-slate-800 bg-[#05070d]">
-            <p class="text-[8px] text-slate-500 mb-1.5 leading-tight">We are more than a motorcycle accessories store. We give riders peace of mind.</p>
-            <div class="rounded overflow-hidden border border-slate-800">
-                <img src="{{ url_for('static', filename='motor.jpg') }}" alt="Givi Bike Touring" class="w-full h-14 object-cover opacity-90">
-            </div>
+    <div class="hidden md:block p-4 border-t border-slate-800 bg-[#05070d] mt-auto">
+        <p class="text-[11px] text-slate-400 leading-relaxed">We are more than a motorcycle accessories store. We give riders peace of mind.</p>
+        <div class="rounded-lg overflow-hidden border border-slate-800 mt-3">
+            <img src="{{ url_for('static', filename='motor.jpg') }}" alt="Givi Bike Touring" class="w-full h-[170px] object-cover">
         </div>
-    </aside>
+    </div>
+</aside>
 
     <!-- MAIN CONTENT - UDAH RESPONSIF -->
     <div class="flex-1 flex flex-col min-w-0 w-full md:h-full md:overflow-y-auto bg-[#070a12]">
