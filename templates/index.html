@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id" class="dark" id="html-root">
 <head>
     <meta charset="UTF-8">
@@ -55,20 +55,20 @@
 <body class="min-h-screen flex flex-col md:flex-row md:h-screen md:overflow-hidden text-[10px]">
 
     <!-- SIDEBAR - UDAH RESPONSIF -->
-    <aside class="w-full md:w-52 bg-[#060911] border-b md:border-b-0 md:border-r border-slate-800 flex flex-col md:justify-between shrink-0 md:h-full">
-        <div class="md:overflow-y-auto flex flex-row md:flex-col items-center md:items-stretch flex-1 min-w-0">
-            <div class="p-2 border-b border-slate-800 flex items-center justify-center bg-[#060911]">
-                <img src="{{ url_for('static', filename='logo.png') }}" alt="GIVI Logo" class="h-10 w-auto object-contain">
+    <aside class="w-full md:w-60 bg-[#060911] border-b md:border-b-0 md:border-r border-slate-800 flex flex-col shrink-0">
+        <div class="flex flex-col flex-1">
+            <div class="p-3 border-b border-slate-800 flex items-center justify-center bg-[#060911]">
+                <img src="{{ url_for('static', filename='logo.png') }}" alt="GIVI Logo" class="w-full max-w-[200px] h-auto object-contain">
 
-            <nav class="p-2 flex flex-row md:flex-col gap-1 md:space-y-1 mt-1 overflow-x-auto whitespace-nowrap">
+            <nav class="p-2 flex flex-col gap-1">
                 <a href="/" class="flex items-center space-x-2 px-2.5 py-1.5 rounded bg-red-600 text-white font-semibold shadow shrink-0">
-                    <span>ðŸ“Š</span><span>Executive Dashboard</span>
+                    <span></span><span>Executive Dashboard</span>
                 </a>
                 <a href="/customer-root-cause" class="flex items-center space-x-2 px-2.5 py-1.5 rounded text-blue-400 bg-blue-950/40 border border-blue-900/50 hover:bg-blue-900/50 transition-colors shrink-0">
-                    <span>ðŸ’¬</span><span>Customer Root Cause</span>
+                    <span></span><span>Customer Root Cause</span>
                 </a>
                 <a href="/forecast" class="flex items-center space-x-2 px-2.5 py-1.5 rounded text-amber-400 hover:bg-slate-800 transition-colors shrink-0">
-                    <span>ðŸ”®</span><span>Forecasting</span>
+                    <span></span><span>Forecasting</span>
                 </a>
             </nav>
         </div>
@@ -88,11 +88,11 @@
         <header class="bg-[#070a12] border-b border-slate-800 p-2 px-4 flex flex-wrap gap-2 justify-between items-center md:sticky md:top-0 z-50 shadow-md">
             <div class="flex items-center space-x-2 flex-wrap gap-1">
                 <h1 class="text-xs font-bold text-white tracking-wide uppercase">GIVI Retail Sales Dashboard - Portfolio</h1>
-                <span class="bg-emerald-950 border border-emerald-800 text-emerald-400 text-[8px] font-mono px-1.5 py-0.5 rounded">â— Auto-Synced</span>
+                <span class="bg-emerald-950 border border-emerald-800 text-emerald-400 text-[8px] font-mono px-1.5 py-0.5 rounded"> Auto-Synced</span>
                 <span class="text-slate-500 text-[8px]" id="last-updated-str">Updated: -</span>
             </div>
             <div class="flex items-center space-x-2 flex-wrap gap-1">
-                <button onclick="window.print()" class="bg-slate-800 hover:bg-slate-700 text-white text-[9px] px-2 py-0.5 rounded border border-slate-700">ðŸ–¨ï¸ Export / Print</button>
+                <button onclick="window.print()" class="bg-slate-800 hover:bg-slate-700 text-white text-[9px] px-2 py-0.5 rounded border border-slate-700"> Export / Print</button>
                 <span class="text-slate-400 text-[9px]">PERIOD:</span>
                 <select id="period-month-select" onchange="onMonthChange()" class="bg-slate-900 border border-slate-700 text-white text-[9px] rounded px-2 py-0.5 font-bold cursor-pointer">
                     <option value="January">January 2026</option>
@@ -185,7 +185,7 @@
             <div class="card-navy rounded-lg p-3 space-y-2.5 border border-slate-800 bg-gradient-to-br from-[#0b0f19] to-[#070a12]">
                 <div class="flex justify-between items-center border-b border-slate-800/80 pb-1.5">
                     <div class="flex items-center space-x-2">
-                        <span class="text-sky-400 text-xs">ðŸ“ˆ</span>
+                        <span class="text-sky-400 text-xs"></span>
                         <h2 class="text-[9px] font-bold text-slate-200 tracking-wider uppercase">RETAIL TRAFFIC & STORE PERFORMANCE INTELLIGENCE</h2>
                     </div>
                     <span class="bg-sky-950/80 border border-sky-800/50 text-sky-300 text-[8px] font-mono px-2 py-0.5 rounded-full">Sheet: Traffic_KPI Active Sync</span>
@@ -237,7 +237,7 @@
                 <div class="card-navy rounded-lg p-3 space-y-2 flex flex-col justify-between">
                     <div class="flex justify-between items-center border-b border-slate-800 pb-1.5">
                         <div class="flex items-center space-x-1.5">
-                            <span class="text-rose-500 text-xs">ðŸ“…</span>
+                            <span class="text-rose-500 text-xs"></span>
                             <h2 class="text-[9px] font-bold text-slate-200 tracking-wider uppercase">SALES PER WEEK (W1 - W5)</h2>
                         </div>
                         <div class="flex items-center space-x-2">
@@ -258,7 +258,7 @@
                 <div class="card-navy rounded-lg p-3 space-y-2 flex flex-col justify-between">
                     <div class="flex justify-between items-center border-b border-slate-800/80 pb-1.5">
                         <div class="flex items-center space-x-1.5">
-                            <span class="text-amber-400 text-xs">ðŸ“Š</span>
+                            <span class="text-amber-400 text-xs"></span>
                             <h2 class="text-[9px] font-bold text-slate-200 tracking-wider uppercase">ANNUAL SALES 2025 VS 2026 & YOY GROWTH</h2>
                         </div>
                         <div class="flex items-center space-x-2">
@@ -292,7 +292,7 @@
             <div class="card-navy rounded-lg p-3 space-y-2 border border-slate-800/80 bg-gradient-to-br from-[#0b0f19] via-[#0b0f19] to-[#070a12]">
                 <div class="flex justify-between items-center border-b border-slate-800/80 pb-1.5">
                     <div class="flex items-center space-x-2">
-                        <span class="text-emerald-400 text-xs">ðŸ·ï¸</span>
+                        <span class="text-emerald-400 text-xs"></span>
                         <h2 class="text-[9px] font-bold text-slate-200 tracking-wider uppercase">REVENUE BY CATEGORY BREAKDOWN (SORTED BY HIGHEST REVENUE)</h2>
                     </div>
                     <div class="flex items-center space-x-2">
@@ -351,7 +351,7 @@
             <div class="card-navy rounded-lg p-3 space-y-2 border border-slate-800/80 bg-gradient-to-br from-[#0b0f19] to-[#070a12]">
                 <div class="flex justify-between items-center border-b border-slate-800/80 pb-1.5">
                     <div class="flex items-center space-x-2">
-                        <span class="text-amber-400 text-xs">ðŸ”¥</span>
+                        <span class="text-amber-400 text-xs"></span>
                         <h2 class="text-[9px] font-bold text-amber-400 tracking-wider uppercase">TOP 5 SALES TREND BY CATEGORY & SKU (SKU, QTY & REVENUE INTELLIGENCE)</h2>
                     </div>
                     <span class="text-[7.5px] text-slate-400 font-mono">Top Case | Racking | Soft Bag | Accessories | Fitting Kits</span>
@@ -594,7 +594,7 @@
             const cGrid = document.getElementById('category-cards-grid');
             cGrid.innerHTML = categories.map((c, i) => {
                 const themeColor = palette[i % palette.length];
-                const rankLabel = i === 0 ? 'ðŸ† #1' : `#${i + 1}`;
+                const rankLabel = i === 0 ? ' #1' : `#${i + 1}`;
                 return `
                 <div class="card-inner p-2 rounded-lg border-t-2 space-y-1 relative group cursor-pointer" style="border-top-color: ${themeColor}">
                     <div class="flex justify-between items-start">
